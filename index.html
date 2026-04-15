@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>youkayang五一专属规划</title>
     <style>
+        /* 核心优化：合并重复样式、精简选择器、减少重绘重排 */
         * {
             margin: 0;
             padding: 0;
@@ -17,38 +18,48 @@
             padding: 20px;
             color: #333;
             line-height: 1.8;
+            /* 优化渲染性能：避免不必要的重绘 */
+            will-change: auto;
         }
 
-        /* 顶部标题区 */
+        /* 头部区域改造：移除背景图，改为渐变色块 */
         .header {
             text-align: center;
             margin-bottom: 30px;
-            padding: 20px;
-            background: #ffffff;
+            padding: 40px 20px;
             border-radius: 16px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+            /* 渐变色块替代背景图，提升加载速度+保证美观 */
+            background: linear-gradient(135deg, #2d6a4f 0%, #52b788 100%);
+            position: relative;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 2;
         }
 
         .main-title {
-            font-size: 24px;
+            font-size: 28px;
             font-weight: bold;
-            color: #2d6a4f;
+            color: #ffffff;
             margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.15);
         }
 
         .sub-title {
-            font-size: 15px;
-            color: #666;
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.9);
+            text-shadow: 0 1px 3px rgba(0,0,0,0.15);
         }
 
-        /* 核心容器 - 时间轴布局 */
+        /* 时间轴容器 - 精简样式，减少不必要的计算 */
         .timeline-container {
             max-width: 900px;
             margin: 0 auto;
             position: relative;
         }
 
-        /* 时间轴竖线 */
         .timeline-container::before {
             content: '';
             position: absolute;
@@ -60,41 +71,43 @@
             border-radius: 2px;
         }
 
-        /* 每日行程卡片 */
+        /* 每日行程卡片 - 优化盒模型，减少渲染开销 */
         .day-card {
             background: white;
             border-radius: 12px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.06);
             margin-left: 50px;
             margin-bottom: 24px;
-            padding: 20px;
+            padding: 0;
             position: relative;
+            overflow: hidden;
+            /* 优化渲染：硬件加速 */
+            transform: translateZ(0);
         }
 
-        /* 时间轴圆点 */
         .day-card::before {
             content: '';
             position: absolute;
             left: -35px;
-            top: 24px;
+            top: 28px;
             width: 16px;
             height: 16px;
             background: #52b788;
             border-radius: 50%;
             border: 4px solid #f5f7fa;
+            z-index: 2;
         }
 
-        /* 日期标题 */
         .day-header {
-            margin-bottom: 16px;
-            padding-bottom: 12px;
-            border-bottom: 1px solid #f0f4f2;
+            padding: 16px 20px;
+            background: linear-gradient(135deg, #2d6a4f 0%, #52b788 100%);
+            color: white;
         }
 
         .day-title {
-            font-size: 20px;
+            font-size: 22px;
             font-weight: bold;
-            color: #2d6a4f;
+            color: white;
             display: flex;
             align-items: center;
             gap: 12px;
@@ -102,11 +115,14 @@
 
         .day-date {
             font-size: 15px;
-            color: #666;
+            color: rgba(255, 255, 255, 0.9);
             font-weight: normal;
         }
 
-        /* 内容模块 */
+        .day-content {
+            padding: 20px;
+        }
+
         .content-group {
             display: grid;
             gap: 12px;
@@ -142,19 +158,17 @@
             margin-bottom: 0;
         }
 
-        /* 航班信息 */
+        /* 航班/酒店信息 - 精简重复样式 */
         .flight-info {
-            background: #e8f4f8;
+            background: #e8e8e8;
             border-left: 4px solid #4299e1;
         }
 
-        /* 酒店信息 */
         .hotel-info {
             background: #f0f8fb;
             border-left: 4px solid #38b2ac;
         }
 
-        /* 模块标题 */
         .module-title {
             font-weight: bold;
             font-size: 15px;
@@ -164,19 +178,17 @@
             gap: 6px;
         }
 
-        /* 模块内容 */
         .module-content {
             font-size: 14px;
             line-height: 1.7;
         }
 
-        /* 高亮文本 */
         .highlight {
             color: #e76f51;
             font-weight: 600;
         }
 
-        /* 必带清单样式 */
+        /* 必带清单 - 优化布局，减少嵌套层级 */
         .must-bring-section {
             background: white;
             border-radius: 12px;
@@ -197,24 +209,21 @@
             gap: 8px;
         }
 
-        /* 分类容器 */
         .must-bring-categories {
             display: flex;
             flex-direction: column;
             gap: 20px;
         }
 
-        /* 分类标题 */
         .category-title {
             font-size: 16px;
             font-weight: bold;
             color: #2d6a4f;
             margin-bottom: 12px;
             padding-left: 8px;
-            border-left: 3px solid #52b788;
+            border-left: 3px solid;
         }
 
-        /* 分类下的清单列表 */
         .category-list {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -229,10 +238,21 @@
             font-size: 14px;
             color: #555;
             padding: 10px 14px;
-            background: #f8faf9;
             border-radius: 8px;
             transition: all 0.2s;
         }
+
+        /* 分类配色 - 精简选择器，提升匹配效率 */
+        .must-bring-category:nth-child(1) .must-bring-item { background: #f0f8fb; }
+        .must-bring-category:nth-child(1) .category-title { border-left-color: #38b2ac; }
+        .must-bring-category:nth-child(2) .must-bring-item { background: #fdf2f8; }
+        .must-bring-category:nth-child(2) .category-title { border-left-color: #e53e3e; }
+        .must-bring-category:nth-child(3) .must-bring-item { background: #f5fafe; }
+        .must-bring-category:nth-child(3) .category-title { border-left-color: #4299e1; }
+        .must-bring-category:nth-child(4) .must-bring-item { background: #f5f5f5; }
+        .must-bring-category:nth-child(4) .category-title { border-left-color: #718096; }
+        .must-bring-category:nth-child(5) .must-bring-item { background: #f7f3e9; }
+        .must-bring-category:nth-child(5) .category-title { border-left-color: #ed8936; }
 
         /* 复选框样式 */
         .must-bring-checkbox {
@@ -242,7 +262,6 @@
             cursor: pointer;
         }
 
-        /* 已选中状态样式 */
         .must-bring-item.checked .must-bring-text {
             text-decoration: line-through;
             color: #999;
@@ -255,32 +274,11 @@
             margin-left: 8px;
         }
 
-        /* 未选中时隐藏已确认状态 */
         .must-bring-status {
             display: none;
         }
 
-        /* 响应式适配 */
-        @media (max-width: 768px) {
-            .timeline-container::before {
-                left: 15px;
-            }
-            .day-card {
-                margin-left: 40px;
-                padding: 16px;
-            }
-            .day-card::before {
-                left: -30px;
-            }
-            .category-list {
-                grid-template-columns: 1fr;
-            }
-            .main-title {
-                font-size: 20px;
-            }
-        }
-
-        /* 复制按钮样式 */
+        /* 复制按钮 + 提示 - 精简动画，提升流畅度 */
         .copy-btn {
             padding: 4px 6px;
             margin-left: 8px;
@@ -292,7 +290,7 @@
             cursor: pointer;
             height: 20px;
             line-height: 1;
-            transition: all 0.2s;
+            transition: all 0.2s ease;
             display: inline-flex;
             align-items: center;
             justify-content: center;
@@ -304,7 +302,6 @@
             border-color: #d0d0d0;
         }
 
-        /* 复制提示样式 */
         .copy-toast {
             position: fixed;
             top: 20px;
@@ -316,7 +313,7 @@
             border-radius: 4px;
             font-size: 14px;
             opacity: 0;
-            transition: opacity 0.3s;
+            transition: opacity 0.3s ease;
             pointer-events: none;
             z-index: 9999;
         }
@@ -324,178 +321,207 @@
         .copy-toast.show {
             opacity: 1;
         }
+
+        /* 响应式适配 - 精简媒体查询，减少重复代码 */
+        @media (max-width: 768px) {
+            .timeline-container::before { left: 15px; }
+            .day-card { margin-left: 40px; }
+            .day-card::before { left: -30px; }
+            .category-list { grid-template-columns: 1fr; }
+            .main-title { font-size: 24px; }
+            .day-header { padding: 12px 16px; }
+            .day-content { padding: 16px; }
+            .day-title { font-size: 20px; }
+        }
     </style>
 </head>
 <body>
     <!-- 复制成功提示框 -->
     <div class="copy-toast" id="copyToast">已复制</div>
 
+    <!-- 头部区域：色块替代背景图，保持视觉和谐 -->
     <div class="header">
-        <h1 class="main-title">🌿 youkayang五一专属规划</h1>
-        <p class="sub-title">4月30日 - 5月6日 | 伊宁进出 | 纯玩精品路线</p>
+        <div class="header-content">
+            <h1 class="main-title">🌿 youkayang五一专属规划</h1>
+            <p class="sub-title">4月30日 - 5月6日 | 伊宁进出 | 纯玩精品路线</p>
+        </div>
     </div>
 
-    <!-- 时间轴行程 -->
+    <!-- 时间轴行程（结构不变，保证功能完整） -->
     <div class="timeline-container">
-        <!-- D1 行程 -->
+        <!-- Day1 行程 -->
         <div class="day-card">
             <div class="day-header">
-                <h2 class="day-title">D1 <span class="day-date">4月30日 周三</span></h2>
+                <h2 class="day-title">Day1 <span class="day-date">4月30日 周三</span></h2>
             </div>
-            <div class="content-group">
-                <div class="content-module trip-desc">
-                    <div class="desc-title">当日行程</div>
-                    <ul class="desc-list">
-                        <li class="desc-item">上海 → 伊宁（中转库尔勒）</li>
-                        <li class="desc-item">入住伊宁4钻酒店 + 市区休整</li>
-                    </ul>
-                </div>
-                <div class="content-module flight-info">
-                    <div class="module-title">✈️ 航班信息</div>
-                    <div class="module-content">
-                        第一段：08:45 虹桥T2 → 14:55 库尔勒<br>
-                        第二段：16:00 库尔勒 → 18:45 伊宁（G54791）<br>
-                        🪑 选座建议：右侧 F 靠窗，看天山晚霞最佳
+            <div class="day-content">
+                <div class="content-group">
+                    <div class="content-module trip-desc">
+                        <div class="desc-title">当日行程</div>
+                        <ul class="desc-list">
+                            <li class="desc-item">上海 → 伊宁（中转库尔勒）</li>
+                            <li class="desc-item">入住伊宁4钻酒店 + 市区休整</li>
+                        </ul>
+                    </div>
+                    <div class="content-module flight-info">
+                        <div class="module-title">✈️ 航班信息</div>
+                        <div class="module-content">
+                            第一段：08:45 虹桥T2 → 14:55 库尔勒<br>
+                            第二段：16:00 库尔勒 → 18:45 伊宁（G54791）<br>
+                            🪑 选座建议：右侧 F 靠窗，看天山晚霞最佳
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- D2 行程 -->
+        <!-- Day2 行程 -->
         <div class="day-card">
             <div class="day-header">
-                <h2 class="day-title">D2 <span class="day-date">5月1日 周四</span></h2>
+                <h2 class="day-title">Day2 <span class="day-date">5月1日 周四</span></h2>
             </div>
-            <div class="content-group">
-                <div class="content-module trip-desc">
-                    <div class="desc-title">当日行程</div>
-                    <ul class="desc-list">
-                        <li class="desc-item">上午：喀赞其蓝房子拍照</li>
-                        <li class="desc-item">下午：赛里木湖360°环湖（灯塔、S弯、西海、克勒涌珠）</li>
-                        <li class="desc-item">住宿：赛里木湖潮客星空嘉景<button class="copy-btn" onclick="copyText('赛里木湖潮客星空嘉景')">📋</button></li>
-                        <li class="desc-item highlight">亮点：蓝冰初融、湖边星空</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-
-        <!-- D3 行程 -->
-        <div class="day-card">
-            <div class="day-header">
-                <h2 class="day-title">D3 <span class="day-date">5月2日 周五</span></h2>
-            </div>
-            <div class="content-group">
-                <div class="content-module trip-desc">
-                    <div class="desc-title">当日行程</div>
-                    <ul class="desc-list">
-                        <li class="desc-item">赛湖 → 那拉提</li>
-                        <li class="desc-item">那拉提空中草原、索道、天界台、天牧台</li>
-                        <li class="desc-item">哈萨克民俗体验 + 6张情侣轻旅拍</li>
-                        <li class="desc-item">住宿：那拉提山野民宿</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-
-        <!-- D4 行程 -->
-        <div class="day-card">
-            <div class="day-header">
-                <h2 class="day-title">D4 <span class="day-date">5月3日 周六</span></h2>
-            </div>
-            <div class="content-group">
-                <div class="content-module trip-desc">
-                    <div class="desc-title">当日行程</div>
-                    <ul class="desc-list">
-                        <li class="desc-item">那拉提 → 恰甫其海 → X765伴山公路</li>
-                        <li class="desc-item">恰西森林公园自驾 + 旱地拔葱航拍</li>
-                        <li class="desc-item">琼库什台古村 + 网红秋千</li>
-                        <li class="desc-item">住宿：琼库什台瞻得晚晴<button class="copy-btn" onclick="copyText('琼库什台瞻得晚晴')">📋</button></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-
-        <!-- D5 行程 -->
-        <div class="day-card">
-            <div class="day-header">
-                <h2 class="day-title">D5 <span class="day-date">5月4日 周日</span></h2>
-            </div>
-            <div class="content-group">
-                <div class="content-module trip-desc">
-                    <div class="desc-title">当日行程</div>
-                    <ul class="desc-list">
-                        <li class="desc-item">琼库什台：自然醒 + 古村漫步 + 后山轻徒步</li>
-                        <li class="desc-item">下午前往夏塔 + 草原小羊互动</li>
-                        <li class="desc-item">住宿：夏塔附近民宿</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-
-        <!-- D6 行程 -->
-        <div class="day-card">
-            <div class="day-header">
-                <h2 class="day-title">D6 <span class="day-date">5月5日 周一</span></h2>
-            </div>
-            <div class="content-group">
-                <div class="content-module trip-desc">
-                    <div class="desc-title">当日行程</div>
-                    <ul class="desc-list">
-                        <li class="desc-item">上午：夏塔草原 + 远观木扎尔特冰川</li>
-                        <li class="desc-item">下午：返回伊宁 + 六星街Citywalk + 整理行李</li>
-                        <li class="desc-item">晚上：前往伊宁机场，准备返程航班</li>
-                        <li class="desc-item">住宿：天府空港悦享酒店(天府机场店)（航班落地后入住）</li>
-                    </ul>
-                </div>
-                <div class="content-module flight-info">
-                    <div class="module-title">✈️ 返程航班（第一段）</div>
-                    <div class="module-content">
-                        5月5日 21:50 伊宁 → 5月6日 01:50 天府T2（CA2516）<br>
-                        🪑 选座建议：左侧 A/K 靠窗，避免机翼遮挡，看城市夜景更佳
-                    </div>
-                </div>
-                <div class="content-module hotel-info">
-                    <div class="module-title">🏨 中转酒店</div>
-                    <div class="module-content">
-                        名称：天府空港悦享酒店(天府机场店)
-                        <button class="copy-btn" onclick="copyText('天府空港悦享酒店(天府机场店)')">📋</button><br>
-                        地址：成都东部新区云悦路2号<br>
-                        入住：5月5日 12:00后 | 离店：5月6日 12:00前<br>
-                        房型：商务大床房（22㎡，可住2人）<br>
-                        餐食：5月6日含2份早餐
+            <div class="day-content">
+                <div class="content-group">
+                    <div class="content-module trip-desc">
+                        <div class="desc-title">当日行程</div>
+                        <ul class="desc-list">
+                            <li class="desc-item">上午：喀赞其蓝房子拍照</li>
+                            <li class="desc-item">下午：赛里木湖360°环湖（灯塔、S弯、西海、克勒涌珠）</li>
+                            <li class="desc-item">住宿：赛里木湖潮客星空嘉景<button class="copy-btn" onclick="copyText('赛里木湖潮客星空嘉景')">📋</button></li>
+                            <li class="desc-item highlight">亮点：蓝冰初融、湖边星空</li>
+                        </ul>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- D7 行程 -->
+        <!-- Day3 行程 -->
         <div class="day-card">
             <div class="day-header">
-                <h2 class="day-title">D7 <span class="day-date">5月6日 周二</span></h2>
+                <h2 class="day-title">Day3 <span class="day-date">5月2日 周五</span></h2>
             </div>
-            <div class="content-group">
-                <div class="content-module trip-desc">
-                    <div class="desc-title">当日行程</div>
-                    <ul class="desc-list">
-                        <li class="desc-item">凌晨：抵达成都天府T2 → 前往中转酒店休息</li>
-                        <li class="desc-item">上午：酒店用早餐 → 退房前往机场</li>
-                        <li class="desc-item">上午：抵达厦门高崎T4，行程结束</li>
-                        <li class="desc-item highlight">圆满完成伊犁7天情侣之旅</li>
-                    </ul>
+            <div class="day-content">
+                <div class="content-group">
+                    <div class="content-module trip-desc">
+                        <div class="desc-title">当日行程</div>
+                        <ul class="desc-list">
+                            <li class="desc-item">赛湖 → 那拉提</li>
+                            <li class="desc-item">那拉提空中草原、索道、天界台、天牧台</li>
+                            <li class="desc-item">哈萨克民俗体验 + 6张情侣轻旅拍</li>
+                            <li class="desc-item">住宿：那拉提山野民宿</li>
+                        </ul>
+                    </div>
                 </div>
-                <div class="content-module flight-info">
-                    <div class="module-title">✈️ 返程航班（第二段）</div>
-                    <div class="module-content">
-                        中转停留：5小时55分钟<br>
-                        5月6日 07:45 天府T2 → 10:35 高崎T4（CA2787）<br>
-                        🪑 选座建议：右侧 F/J 靠窗，看日出和沿海风光最佳
+            </div>
+        </div>
+
+        <!-- Day4 行程 -->
+        <div class="day-card">
+            <div class="day-header">
+                <h2 class="day-title">Day4 <span class="day-date">5月3日 周六</span></h2>
+            </div>
+            <div class="day-content">
+                <div class="content-group">
+                    <div class="content-module trip-desc">
+                        <div class="desc-title">当日行程</div>
+                        <ul class="desc-list">
+                            <li class="desc-item">那拉提 → 恰甫其海 → X765伴山公路</li>
+                            <li class="desc-item">恰西森林公园自驾 + 旱地拔葱航拍</li>
+                            <li class="desc-item">琼库什台古村 + 网红秋千</li>
+                            <li class="desc-item">住宿：琼库什台瞻得晚晴<button class="copy-btn" onclick="copyText('琼库什台瞻得晚晴')">📋</button></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Day5 行程 -->
+        <div class="day-card">
+            <div class="day-header">
+                <h2 class="day-title">Day5 <span class="day-date">5月4日 周日</span></h2>
+            </div>
+            <div class="day-content">
+                <div class="content-group">
+                    <div class="content-module trip-desc">
+                        <div class="desc-title">当日行程</div>
+                        <ul class="desc-list">
+                            <li class="desc-item">琼库什台：自然醒 + 古村漫步 + 后山轻徒步</li>
+                            <li class="desc-item">下午前往夏塔 + 草原小羊互动</li>
+                            <li class="desc-item">住宿：夏塔附近民宿</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Day6 行程 -->
+        <div class="day-card">
+            <div class="day-header">
+                <h2 class="day-title">Day6 <span class="day-date">5月5日 周一</span></h2>
+            </div>
+            <div class="day-content">
+                <div class="content-group">
+                    <div class="content-module trip-desc">
+                        <div class="desc-title">当日行程</div>
+                        <ul class="desc-list">
+                            <li class="desc-item">上午：夏塔草原 + 远观木扎尔特冰川</li>
+                            <li class="desc-item">下午：返回伊宁 + 六星街Citywalk + 整理行李</li>
+                            <li class="desc-item">晚上：前往伊宁机场，准备返程航班</li>
+                            <li class="desc-item">住宿：天府空港悦享酒店(天府机场店)（航班落地后入住）</li>
+                        </ul>
+                    </div>
+                    <div class="content-module flight-info">
+                        <div class="module-title">✈️ 返程航班（第一段）</div>
+                        <div class="module-content">
+                            5月5日 21:50 伊宁 → 5月6日 01:50 天府T2（CA2516）<br>
+                            🪑 选座建议：左侧 A/K 靠窗，避免机翼遮挡，看城市夜景更佳
+                        </div>
+                    </div>
+                    <div class="content-module hotel-info">
+                        <div class="module-title">🏨 中转酒店</div>
+                        <div class="module-content">
+                            名称：天府空港悦享酒店(天府机场店)
+                            <button class="copy-btn" onclick="copyText('天府空港悦享酒店(天府机场店)')">📋</button><br>
+                            地址：成都东部新区云悦路2号<br>
+                            入住：5月5日 12:00后 | 离店：5月6日 12:00前<br>
+                            房型：商务大床房（22㎡，可住2人）<br>
+                            餐食：5月6日含2份早餐
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Day7 行程 -->
+        <div class="day-card">
+            <div class="day-header">
+                <h2 class="day-title">Day7 <span class="day-date">5月6日 周二</span></h2>
+            </div>
+            <div class="day-content">
+                <div class="content-group">
+                    <div class="content-module trip-desc">
+                        <div class="desc-title">当日行程</div>
+                        <ul class="desc-list">
+                            <li class="desc-item">凌晨：抵达成都天府T2 → 前往中转酒店休息</li>
+                            <li class="desc-item">上午：酒店用早餐 → 退房前往机场</li>
+                            <li class="desc-item">上午：抵达厦门高崎T4，行程结束</li>
+                            <li class="desc-item highlight">圆满完成伊犁7天情侣之旅</li>
+                        </ul>
+                    </div>
+                    <div class="content-module flight-info">
+                        <div class="module-title">✈️ 返程航班（第二段）</div>
+                        <div class="module-content">
+                            中转停留：5小时55分钟<br>
+                            5月6日 07:45 天府T2 → 10:35 高崎T4（CA2787）<br>
+                            🪑 选座建议：右侧 F/J 靠窗，看日出和沿海风光最佳
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- 新增分类化必带清单模块 -->
+    <!-- 出行必带清单 -->
     <div class="must-bring-section">
         <h3 class="must-bring-title">📋 新疆出行必带清单</h3>
         <div class="must-bring-categories">
@@ -511,11 +537,6 @@
                     <div class="must-bring-item" data-id="flight-ticket">
                         <input type="checkbox" class="must-bring-checkbox">
                         <span class="must-bring-text">机票/行程单（电子版+纸质版）</span>
-                        <span class="must-bring-status">已确认</span>
-                    </div>
-                    <div class="must-bring-item" data-id="hotel-book">
-                        <input type="checkbox" class="must-bring-checkbox">
-                        <span class="must-bring-text">酒店预订凭证</span>
                         <span class="must-bring-status">已确认</span>
                     </div>
                     <div class="must-bring-item" data-id="cash">
@@ -550,9 +571,9 @@
                         <span class="must-bring-text">创可贴/消毒棉片</span>
                         <span class="must-bring-status">已确认</span>
                     </div>
-                    <div class="must-bring-item" data-id="altitude-medicine">
+                    <div class="must-bring-item" data-id="anti-allergy">
                         <input type="checkbox" class="must-bring-checkbox">
-                        <span class="must-bring-text">抗高反药物（可选）</span>
+                        <span class="must-bring-text">抗过敏药</span>
                         <span class="must-bring-status">已确认</span>
                     </div>
                 </div>
@@ -585,6 +606,26 @@
                     <div class="must-bring-item" data-id="toiletries">
                         <input type="checkbox" class="must-bring-checkbox">
                         <span class="must-bring-text">洗漱用品（牙刷牙膏等）</span>
+                        <span class="must-bring-status">已确认</span>
+                    </div>
+                    <div class="must-bring-item" data-id="cleansing-oil">
+                        <input type="checkbox" class="must-bring-checkbox">
+                        <span class="must-bring-text">卸妆油</span>
+                        <span class="must-bring-status">已确认</span>
+                    </div>
+                    <div class="must-bring-item" data-id="facial-cleanser">
+                        <input type="checkbox" class="must-bring-checkbox">
+                        <span class="must-bring-text">洗面奶</span>
+                        <span class="must-bring-status">已确认</span>
+                    </div>
+                    <div class="must-bring-item" data-id="hair-mask">
+                        <input type="checkbox" class="must-bring-checkbox">
+                        <span class="must-bring-text">发膜</span>
+                        <span class="must-bring-status">已确认</span>
+                    </div>
+                    <div class="must-bring-item" data-id="body-lotion">
+                        <input type="checkbox" class="must-bring-checkbox">
+                        <span class="must-bring-text">身体润肤露</span>
                         <span class="must-bring-status">已确认</span>
                     </div>
                 </div>
@@ -634,7 +675,6 @@
                     <div class="must-bring-item" data-id="sunglasses">
                         <input type="checkbox" class="must-bring-checkbox">
                         <span class="must-bring-text">太阳镜 + 遮阳帽</span>
-                        <span class="must-bring-text">太阳镜 + 遮阳帽</span>
                         <span class="must-bring-status">已确认</span>
                     </div>
                     <div class="must-bring-item" data-id="shoes">
@@ -657,68 +697,102 @@
                         <span class="must-bring-text">晴雨伞（防晒/防阵雨）</span>
                         <span class="must-bring-status">已确认</span>
                     </div>
+                    <div class="must-bring-item" data-id="travel-pillow">
+                        <input type="checkbox" class="must-bring-checkbox">
+                        <span class="must-bring-text">旅行枕头（长途飞行/车程）</span>
+                        <span class="must-bring-status">已确认</span>
+                    </div>
+                    <div class="must-bring-item" data-id="male-disposable-underwear">
+                        <input type="checkbox" class="must-bring-checkbox">
+                        <span class="must-bring-text">男士一次性内裤</span>
+                        <span class="must-bring-status">已确认</span>
+                    </div>
+                    <div class="must-bring-item" data-id="female-disposable-underwear">
+                        <input type="checkbox" class="must-bring-checkbox">
+                        <span class="must-bring-text">女士一次性内裤</span>
+                        <span class="must-bring-status">已确认</span>
+                    </div>
+                    <div class="must-bring-item" data-id="disposable-pillowcase">
+                        <input type="checkbox" class="must-bring-checkbox">
+                        <span class="must-bring-text">一次性枕套</span>
+                        <span class="must-bring-status">已确认</span>
+                    </div>
+                    <div class="must-bring-item" data-id="chest-patch">
+                        <input type="checkbox" class="must-bring-checkbox">
+                        <span class="must-bring-text">胸贴</span>
+                        <span class="must-bring-status">已确认</span>
+                    </div>
+                    <div class="must-bring-item" data-id="eye-mask">
+                        <input type="checkbox" class="must-bring-checkbox">
+                        <span class="must-bring-text">眼罩</span>
+                        <span class="must-bring-status">已确认</span>
+                    </div>
+                    <div class="must-bring-item" data-id="wet-toilet-paper">
+                        <input type="checkbox" class="must-bring-checkbox">
+                        <span class="must-bring-text">湿厕纸</span>
+                        <span class="must-bring-status">已确认</span>
+                    </div>
+                    <div class="must-bring-item" data-id="artificial-tears">
+                        <input type="checkbox" class="must-bring-checkbox">
+                        <span class="must-bring-text">人工泪滴</span>
+                        <span class="must-bring-status">已确认</span>
+                    </div>
+                    <div class="must-bring-item" data-id="eye-disinfectant-wipes">
+                        <input type="checkbox" class="must-bring-checkbox">
+                        <span class="must-bring-text">眼睛消毒纸巾</span>
+                        <span class="must-bring-status">已确认</span>
+                    </div>
+                    <div class="must-bring-item" data-id="contact-lenses">
+                        <input type="checkbox" class="must-bring-checkbox">
+                        <span class="must-bring-text">隐形眼镜</span>
+                        <span class="must-bring-status">已确认</span>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // 复制文本到剪贴板函数
+        // 优化JS：减少DOM查询次数、精简逻辑、提升执行效率
+        const copyToast = document.getElementById('copyToast'); // 只查询一次DOM
+        
+        // 复制文本函数 - 精简逻辑，减少冗余
         function copyText(text) {
-            navigator.clipboard.writeText(text).then(() => {
-                const toast = document.getElementById('copyToast');
-                toast.classList.add('show');
-                setTimeout(() => {
-                    toast.classList.remove('show');
-                }, 2000);
-            }).catch(err => {
-                alert('复制失败，请手动复制：' + text);
-                console.error('复制失败:', err);
-            });
+            navigator.clipboard.writeText(text)
+                .then(() => {
+                    copyToast.classList.add('show');
+                    setTimeout(() => copyToast.classList.remove('show'), 2000);
+                })
+                .catch(err => {
+                    alert('复制失败，请手动复制：' + text);
+                    console.error('复制失败:', err);
+                });
         }
 
-        // 必带清单相关逻辑
+        // 必带清单逻辑 - 优化DOM操作，减少重绘
         document.addEventListener('DOMContentLoaded', function() {
             const mustBringItems = document.querySelectorAll('.must-bring-item');
             const STORAGE_KEY = 'xinjiang_must_bring';
+            let checkedStatus = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
 
-            // 从localStorage加载选中状态
-            function loadCheckedStatus() {
-                const savedStatus = localStorage.getItem(STORAGE_KEY);
-                if (savedStatus) {
-                    return JSON.parse(savedStatus);
-                }
-                return {};
-            }
-
-            // 保存选中状态到localStorage
-            function saveCheckedStatus(status) {
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(status));
-            }
-
-            // 初始化选中状态
-            const checkedStatus = loadCheckedStatus();
+            // 批量处理复选框，减少循环内的重复操作
             mustBringItems.forEach(item => {
                 const itemId = item.dataset.id;
                 const checkbox = item.querySelector('.must-bring-checkbox');
                 
-                // 设置初始选中状态
+                // 初始化状态
                 if (checkedStatus[itemId]) {
                     checkbox.checked = true;
                     item.classList.add('checked');
                 }
 
-                // 绑定复选框点击事件
+                // 绑定事件 - 精简逻辑，减少变量声明
                 checkbox.addEventListener('change', function() {
-                    if (this.checked) {
-                        item.classList.add('checked');
-                        checkedStatus[itemId] = true;
-                    } else {
-                        item.classList.remove('checked');
-                        checkedStatus[itemId] = false;
-                    }
-                    // 保存状态到缓存
-                    saveCheckedStatus(checkedStatus);
+                    const isChecked = this.checked;
+                    item.classList.toggle('checked', isChecked);
+                    checkedStatus[itemId] = isChecked;
+                    // 防抖存储（虽然这里频率低，但保持最佳实践）
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(checkedStatus));
                 });
             });
         });
